@@ -37,7 +37,7 @@ if(isset($_POST['submit'])){
                 $data['users']=$row;
             }
 
-            $_SESSION['id'] = $data['users']['id'];
+            $_SESSION['name'] = $data['users']['name'];
             $error = 'dang nhap thanh cong';
             $dsusers='<button class="btn btn-primary" ><a href="dsusers.php"><i class="fa fa-lock"></i> dsusers</a></button>';
         }else{

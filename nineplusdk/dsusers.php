@@ -3,13 +3,13 @@ session_start();
 include 'connect.php';
 
 
-if(isset($_SESSION['id'])){
-    $id = $_SESSION['id'];
+if(isset($_SESSION['name'])){
+    $name = $_SESSION['name'];
 }
 
 
 
-$sql = "SELECT * FROM users WHERE id='".$id."'";
+$sql = "SELECT * FROM users";
 $result = $con -> query($sql);
 $data=[];
 
@@ -46,7 +46,7 @@ foreach($data as $vl){
     <title>dsusers</title>
 </head>
 <body>
-    
+    <?php echo  "xin chao ban :".$name ?>
     <table class="table">
         <thead>
             <tr>
