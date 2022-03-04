@@ -95,9 +95,8 @@ if(isset($_POST['submit'])){
   <body>
 
 
-  
-    
-      <form action="" method="POST" id="khung">
+    <div class="br">
+      <form action="" method="POST" class="khung">
         <div class="row">
           <div class="col-sm-4"></div>
           <div class="col-sm-4"><b>ĐĂNG KÝ</b></div>
@@ -140,10 +139,16 @@ if(isset($_POST['submit'])){
           <button type="submit" name="submit" class="btn btn-primary ">Đăng Ký</button>
           <div class="col-sm-4"></div>
         </div>
-        <?php echo $error;?>
+        <p id="err"><?php echo $error;?></p>
+        
+        
+        <br>
         <button ><a href="dangnhap.php">Dang Nhap</a></button>
         
       </form>
+    </div>
+    
+      
       
 
     
@@ -163,14 +168,16 @@ if(isset($_POST['submit'])){
     var password = document.getElementById('password').value;
     var passwordcf = document.getElementById('passwordcf').value;
     var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-
+    var err='';
 
     if(!strongRegex.test(password)){
-      alert('Password hk hop le');
+      err = "password hk dung dinh dang";
+      
     }else if(password != passwordcf){
-      alert('Password confirm hk hop le');
+      err = "password confirm hk trung";
+     
     }
-    
+    $('p#err').text(err);
   });
     
 </script>

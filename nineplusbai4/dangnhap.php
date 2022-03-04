@@ -1,6 +1,9 @@
 <?php
 
 include 'connect.php';
+require "PHPMailer-master/src/PHPMailer.php";  //nhúng thư viện vào để dùng, sửa lại đường dẫn cho đúng nếu bạn lưu vào chỗ khác
+require "PHPMailer-master/src/SMTP.php"; //nhúng thư viện vào để dùng
+require 'PHPMailer-master/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -35,16 +38,47 @@ if(isset($_POST['submit'])){
 
         if($result->num_rows >0){
             
-            $dsusers='<button ><a href="dsusers.php"><i class="fa fa-lock"></i> dsusers</a></button>';
+          $dsusers='<button><a href="dsusers.php"><i class="fa fa-lock"></i> dsusers</a></button>';
 
-            $subject = "thông báo đăng nhập";
-            $message = "bạn đã đăng nhập thành công";
+        //     $subject = "thông báo đăng nhập";
+        //     $message = "bạn đã đăng nhập thành công";
+        //     $header = "from: lenghiamailtest@gmail.com";
+        //     if($success = mail ($email,$subject,$message,$header)==true){
+        //       $error = $email;
+        //     };
+        // }else{
+        //     $error = 'dang nhap that bai';
+
+          $PHPMailer = new PHPMailer(true);
+
+          
+          try {
+              $PHPMailer->SMTPDebug = 0;
+              $PHPMailer->isSMTP();
+              $PHPMailer->Host = 'smtp.gmail.com';
+              $PHPMailer->SMTPAuth = true;
+              $PHPMailer->Username = 'lenghiamailtest@gmail.com';
+              $PHPMailer->Password = '0337458674';
+              $PHPMailer->SMTPSecure = 'ssl';
+              $PHPMailer->Port = 465;
             
-            if($success = mail ($email,$subject,$message)==true){
-              $error = 'dang nhap thanh cong';
-            };
+              $PHPMailer->setFrom('lenghiamailtest@gmail.com', 'lenghia');
+              $PHPMailer->addAddress($email ,'user');
+            
+              $PHPMailer->isHTML(true);
+              $PHPMailer->Subject = 'thong bao dang nhap';
+              $PHPMailer->Body = 'dang nhap thanh cong';
+              $PHPMailer->send();
+          } catch (Exception $exception) {
+              echo $PHPMailer->ErrorInfo;
+          }
+
+          $error = 'dang nhap thanh cong';
+
+
+
         }else{
-            $error = 'dang nhap that bai';
+           $error = 'dang nhap that bai';
         }
 
     }
@@ -64,7 +98,7 @@ if(isset($_POST['submit'])){
 <!doctype html>
 <html lang="en">
   <head>
-    <title>dang ky</title>
+    <title>dang nhap</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -76,9 +110,9 @@ if(isset($_POST['submit'])){
   <body>
 
 
-  
-    
-      <form action="" method="POST" id="khung">
+    <div class="br">
+
+      <form action="" method="POST" class="khung">
         <div class="row">
           <div class="col-sm-4"></div>
           <div class="col-sm-4"><b>ĐĂNG Nhap</b></div>
@@ -96,7 +130,7 @@ if(isset($_POST['submit'])){
         </div>
          
           
-            </div>
+        
         <div class="row ">
             <div class="col-sm-2"></div>
             <div class="col-sm-6 ">
@@ -118,6 +152,9 @@ if(isset($_POST['submit'])){
         <?php echo $dsusers;?>
         
       </form>
+      
+    </div>
+    
       
 
     
