@@ -1,6 +1,12 @@
 <?php
 
 include 'connect.php';
+include "PHPMailer-master/src/PHPMailer.php";  //nhúng thư viện vào để dùng, sửa lại đường dẫn cho đúng nếu bạn lưu vào chỗ khác
+include "PHPMailer-master/src/SMTP.php"; //nhúng thư viện vào để dùng
+include 'PHPMailer-master/src/Exception.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 $error ='';
 $check = 1;
@@ -39,30 +45,44 @@ if(isset($_POST['submit'])){
 
     if(!preg_match($bt ,$password)){
       $error = "";
-    }else if($password != $passwordcf){
-      $error = "";
-    }else{
-      $sql1 = "SELECT * FROM users where email='".$email."'";
-
-
+      }else if($password != $passwordcf){
+        $error = "";
+      }else{
+        $sql1 = "SELECT * FROM users where email='".$email."'";
         $result = $con->query($sql1);
-       
-
         if($result->num_rows >0){
-            $error = "email bị trùng";
+          $error = "email bị trùng";
         }else{
-            $pass =  md5($_POST['password']);
-            $sql = "INSERT INTO users (email,password,name) VALUES('$email','$pass','$username')";
+          $pass =  md5($_POST['password']);
+          $sql = "INSERT INTO users (email,password,name) VALUES('$email','$pass','$username')";
+          if($result = $con->query($sql)){
+          $PHPMailer = new PHPMailer(true);         
+          try {
+            $PHPMailer->SMTPDebug = 0;
+            $PHPMailer->isSMTP();
+            $PHPMailer->Host = 'smtp.gmail.com';
+            $PHPMailer->SMTPAuth = true;
+            $PHPMailer->Username = 'lenghiamailtest@gmail.com';
+            $PHPMailer->Password = '0337458674';
+            $PHPMailer->SMTPSecure = 'ssl';
+            $PHPMailer->Port = 465;              
+            $PHPMailer->setFrom('lenghiamailtest@gmail.com', 'lenghia');
+            $PHPMailer->addAddress($email ,'user');              
+            $PHPMailer->isHTML(true);
+            $PHPMailer->Subject = 'thong bao dang nhap';
+            $PHPMailer->Body = 'dang nhap thanh cong';
+            $PHPMailer->send();      
+            $error = "dang ky thanh cong moi ban dang nhap";
+          }catch (Exception $exception) {
+            echo $PHPMailer->ErrorInfo;
+          }
 
-        
-
-            if($result = $con->query($sql)){
-                $error = "dang ky thanh cong moi ban dang nhap";
-            }else{
-                $error = 'dang ky that bai';
-            }
         }
+      }
+
     }
+      
+    
     
 
   }

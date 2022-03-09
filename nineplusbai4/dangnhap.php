@@ -1,11 +1,7 @@
 <?php
 
 include 'connect.php';
-require "PHPMailer-master/src/PHPMailer.php";  //nhúng thư viện vào để dùng, sửa lại đường dẫn cho đúng nếu bạn lưu vào chỗ khác
-require "PHPMailer-master/src/SMTP.php"; //nhúng thư viện vào để dùng
-require 'PHPMailer-master/src/Exception.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+session_start();
 
 $check=1;
 
@@ -26,61 +22,27 @@ if(isset($_POST['submit'])){
 
 
     if($check==1){
-        $email   = $_POST['email'];
-        $password   = md5($_POST['password']);
+      $email   = $_POST['email'];
+      $password   = md5($_POST['password']);
 
 
-        $sql = "SELECT * FROM users where email='".$email."' AND password='".$password."'";
+      $sql = "SELECT * FROM users where email='".$email."' AND password='".$password."'";
 
 
-        $result = $con->query($sql);
-      
+      $result = $con->query($sql);
+      $data=[];
 
-        if($result->num_rows >0){
-            
-          $dsusers='<button><a href="dsusers.php"><i class="fa fa-lock"></i> dsusers</a></button>';
-
-        //     $subject = "thông báo đăng nhập";
-        //     $message = "bạn đã đăng nhập thành công";
-        //     $header = "from: lenghiamailtest@gmail.com";
-        //     if($success = mail ($email,$subject,$message,$header)==true){
-        //       $error = $email;
-        //     };
-        // }else{
-        //     $error = 'dang nhap that bai';
-
-          $PHPMailer = new PHPMailer(true);
-
-          
-          try {
-              $PHPMailer->SMTPDebug = 0;
-              $PHPMailer->isSMTP();
-              $PHPMailer->Host = 'smtp.gmail.com';
-              $PHPMailer->SMTPAuth = true;
-              $PHPMailer->Username = 'lenghiamailtest@gmail.com';
-              $PHPMailer->Password = '0337458674';
-              $PHPMailer->SMTPSecure = 'ssl';
-              $PHPMailer->Port = 465;
-            
-              $PHPMailer->setFrom('lenghiamailtest@gmail.com', 'lenghia');
-              $PHPMailer->addAddress($email ,'user');
-            
-              $PHPMailer->isHTML(true);
-              $PHPMailer->Subject = 'thong bao dang nhap';
-              $PHPMailer->Body = 'dang nhap thanh cong';
-              $PHPMailer->send();
-          } catch (Exception $exception) {
-              echo $PHPMailer->ErrorInfo;
+      if($result->num_rows >0){
+          while($row = $result->fetch_assoc()){
+              $data['users']=$row;
           }
 
+          $_SESSION['name'] = $data['users']['name'];
           $error = 'dang nhap thanh cong';
-
-
-
-        }else{
-           $error = 'dang nhap that bai';
-        }
-
+          $dsusers='<button><a href="qluser.php"><i class="fa fa-lock"></i> dluser</a></button>';
+      }else{
+          $error = 'dang nhap that bai';
+      }
     }
 }
 
