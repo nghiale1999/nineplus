@@ -51,8 +51,8 @@ foreach($data as $vl){
 				<td>'.$vl['name'].'</td>
 				<td>'.$vl['email'].'</td>
 
-				<td><Button>update</Button></td>
-				<td><Button>delete</Button></td>
+				<td><Button><a href="update.php?id_user='.$vl['id'].'">update</a></Button></td>
+                <td><Button><a href="delete.php?id_user='.$vl['id'].'">delete</a></Button></td>
 			
 				
 			</tr>';

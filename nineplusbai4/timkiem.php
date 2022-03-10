@@ -22,6 +22,14 @@ if(isset($_POST['submit'])){
         while($row = $result->fetch_assoc()){
             $data[]=$row;
         }
+    }else{
+        $sql = "SELECT * FROM users where email='".$user."'";
+        $result = $con -> query($sql);
+        if($result->num_rows >0){
+            while($row = $result->fetch_assoc()){
+                $data[]=$row;
+            }
+        }
     }
     
 
@@ -35,8 +43,8 @@ if(isset($_POST['submit'])){
                     <td>'.$vl['name'].'</td>
                     <td>'.$vl['email'].'</td>
 
-                    <td><Button>update</Button></td>
-                    <td><Button>delete</Button></td>
+                    <td><Button><a href="update.php?id_user='.$vl['id'].'">update</a></Button></td>
+                    <td><Button><a href="delete.php?id_user='.$vl['id'].'">delete</a></Button></td>
                 
                     
                 </tr>';
@@ -69,6 +77,7 @@ if(isset($_POST['submit'])){
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
   <body>
+      
 
   <div class="row">
       <div class="col-sm-4"></div>
