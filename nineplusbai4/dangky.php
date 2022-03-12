@@ -15,16 +15,13 @@ if(isset($_POST['submit'])){
   if($_POST['username']==''){
       $error='moi nhap ten';
       $check=2;
-  }
-  if($_POST['password']==''){
+  }else if($_POST['password']==''){
       $error='moi nhap password';
       $check=2;
-  }
-  if($_POST['passwordcf']==''){
+  }else if($_POST['passwordcf']==''){
       $error='moi nhap password confirm';
       $check=2;
-  }
-  if($_POST['email']==''){
+  }else if($_POST['email']==''){
       $error='moi nhap email';
       $check=2;
   }

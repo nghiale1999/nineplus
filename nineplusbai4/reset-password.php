@@ -1,55 +1,65 @@
-<?php
+<?php 
 
-include 'connect.php';
-session_start();
+include('connect.php');
 
+$token='';
+$error='';
 $check=1;
 
-$error='';
-$dsusers='';
+if(isset($_GET['token'])){
+    $token = $_GET['token'];
+}
+
 
 if(isset($_POST['submit'])){
-    
+
+
+
     if($_POST['email']==''){
-        $error='moi nhap email';
+        
         $check=2;
     }
 
     if($_POST['password']==''){
-        $error='moi nhap password';
+       
         $check=2;
     }
 
-
     if($check==1){
-      $email   = $_POST['email'];
-      $password   = md5($_POST['password']);
 
+        $email   = $_POST['email'];
+        $password   = md5($_POST['password']);
+        $ngayhan = date("Y/m/d");
+        $sql = "SELECT * FROM doimk WHERE email='".$email."' ORDER BY id DESC LIMIT 1";
+        $result = $con->query($sql);
+        $data=[];
 
-      $sql = "SELECT * FROM users where email='".$email."' AND password='".$password."'";
+        if($result->num_rows >0){
+            while($row = $result->fetch_assoc()){
+                $data['users']=$row;
+            }
+        }
+        foreach($data as $vl){
 
+            if($email == $vl['email'] && $ngayhan >= $vl['ngayhethan']){
 
-      $result = $con->query($sql);
-      $data=[];
+                $sql = "UPDATE users SET password = '".$password."' WHERE email='".$email."'";
+                $result = $con->query($sql);
+                $error = 'doi password thanh cong';
+                
+            }else{
+                $error = 'doi password that bai';
+            }
+            
+        }
+        
 
-      if($result->num_rows >0){
-          while($row = $result->fetch_assoc()){
-              $data['users']=$row;
-          }
-
-          $_SESSION['name'] = $data['users']['name'];
-          $error = 'dang nhap thanh cong';
-          $dsusers='<button><a href="qluser.php"><i class="fa fa-lock"></i> dluser</a></button>';
-      }else{
-          $error = 'dang nhap that bai';
-      }
     }
+
+
+    
+
 }
-
-
-
-
-
 
 
 
@@ -57,10 +67,12 @@ if(isset($_POST['submit'])){
 
 
 
+
+
 <!doctype html>
 <html lang="en">
   <head>
-    <title>dang nhap</title>
+    <title>doi mat khau</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -74,10 +86,10 @@ if(isset($_POST['submit'])){
 
     <div class="br">
 
-      <form action="" method="POST" class="khung" id="formdn">
+      <form action="" method="POST" class="khung" id="formdmk">
         <div class="row">
           <div class="col-sm-4"></div>
-          <div class="col-sm-4"><b>ĐĂNG Nhap</b></div>
+          <div class="col-sm-4"><b>doi mat khau</b></div>
           <div class="col-sm-4"></div>
         </div>
         <div class="row ">
@@ -97,6 +109,16 @@ if(isset($_POST['submit'])){
             <div class="col-sm-2"></div>
             <div class="col-sm-6 ">
                 <div class="form-group">
+                <label for=""><b>token</b></label>
+                <input type="text" class="form-control "  name="token" value="<?php echo $token; ?>" placeholder="token" readonly>
+                </div>
+            </div>
+          
+        </div>
+        <div class="row ">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-6 ">
+                <div class="form-group">
                 <label for=""><b>Password</b></label>
                 <input type="password" class="form-control "  name="password"  placeholder="Password">
                 </div>
@@ -106,15 +128,14 @@ if(isset($_POST['submit'])){
         
         <div class="row ">
           <div class="col-sm-4"></div>
-          <button type="submit" name="submit" class="btn btn-primary ">Đăng Nhap</button>
+          <button type="submit" name="submit" class="btn btn-primary ">doi mat khau</button>
           <div class="col-sm-4"></div>
         </div>
+        <button ><a href="dangnhap.php">Dang Nhap</a></button>
         
-        <button><a href="quenmk.php">Quên Mật khẩu?</a></button>
           
         <?php echo $error;?>
-        <br>
-        <?php echo $dsusers;?>
+       
         
       </form>
       
@@ -133,7 +154,7 @@ if(isset($_POST['submit'])){
     <script>
 
         
-        $("#formdn").validate({
+        $("#formdmk").validate({
             rules: {
               email: {
                 required:true,
