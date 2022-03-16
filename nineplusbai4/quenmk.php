@@ -28,7 +28,7 @@ if(isset($_POST['submit'])){
     }
 
     if($check==1){
-        $email   = $_POST['email'];
+        $email   = htmlspecialchars($_POST['email']);
 
         $sql = "SELECT * FROM users where email='".$email."'";
         $result = $con->query($sql);
@@ -71,7 +71,7 @@ if(isset($_POST['submit'])){
             $PHPMailer->addAddress($email ,'user');              
             $PHPMailer->isHTML(true);
             $PHPMailer->Subject = 'dang ky mat khau moi';
-            $PHPMailer->Body = 'doi mat khau vui long click vao link: http://localhost:8080/hoc_php/nineplusbai4/reset-password.php?token='.$random.'';
+            $PHPMailer->Body = 'doi mat khau vui long click vao link: https://nineplusbai4.herokuapp.com/reset-password.php?token='.$random.'';
             $PHPMailer->send();      
             $error = 'lay mat khai thanh cong';
           }catch (Exception $exception) {

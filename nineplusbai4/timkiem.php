@@ -10,7 +10,7 @@ if(isset($_SESSION['name'])){
 
 
 if(isset($_POST['submit'])){
-    $user = $_POST['timkiem'];
+    $user = htmlspecialchars($_POST['timkiem']);
 
     
 

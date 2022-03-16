@@ -28,10 +28,10 @@ if(isset($_POST['submit'])){
 
   if($check==1){
     
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $passwordcf = $_POST['passwordcf'];
-    $email = $_POST['email'];
+    $username = htmlspecialchars($_POST['username']);
+    $password = htmlspecialchars($_POST['password']);
+    $passwordcf = htmlspecialchars($_POST['passwordcf']);
+    $email = htmlspecialchars($_POST['email']);
 
 
 
@@ -196,5 +196,9 @@ if(isset($_POST['submit'])){
     }
     $('p#err').text(err);
   });
+
+
+
+  
     
 </script>

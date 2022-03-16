@@ -27,8 +27,9 @@ if(isset($_POST['submit'])){
 
     if($check==1){
 
-        $email   = $_POST['email'];
-        $password   = md5($_POST['password']);
+        $email   = htmlspecialchars($_POST['email']);
+        $pass   = htmlspecialchars($_POST['password']);
+        $password   = md5($pass);
         $ngayhan = date("Y/m/d");
         $sql = "SELECT * FROM doimk WHERE email='".$email."' ORDER BY id DESC LIMIT 1";
         $result = $con->query($sql);

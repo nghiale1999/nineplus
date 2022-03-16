@@ -25,9 +25,10 @@ if(isset($_GET['id_user'])){
 
 
 if(isset($_POST['submit'])){
-    $name = $_POST['name'];
-    $password = md5($_POST['password']);
-    $email = $_POST['email'];
+    $name = htmlspecialchars($_POST['name']);
+    $pass   = htmlspecialchars($_POST['password']);
+    $password   = md5($pass);
+    $email = htmlspecialchars($_POST['email']);
 
     $sql =" UPDATE users SET name = '".$name."', email = '".$email."', password = '".$password."' WHERE id='".$id_user."' ";
 

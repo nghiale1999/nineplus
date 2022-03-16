@@ -7,6 +7,14 @@ $check=1;
 
 $error='';
 $dsusers='';
+$password_cookie='';
+$email_cookie='';
+
+if(isset($_COOKIE['email'])&&isset($_COOKIE['password'])){
+  $email_cookie =  htmlspecialchars($_COOKIE['email']);
+  $password_cookie =  htmlspecialchars($_COOKIE['password']);
+  
+}
 
 if(isset($_POST['submit'])){
     
@@ -22,8 +30,9 @@ if(isset($_POST['submit'])){
 
 
     if($check==1){
-      $email   = $_POST['email'];
-      $password   = md5($_POST['password']);
+      $email   = htmlspecialchars($_POST['email']);
+      $pass   = htmlspecialchars($_POST['password']);
+      $password   = md5($pass);
 
 
       $sql = "SELECT * FROM users where email='".$email."' AND password='".$password."'";
@@ -38,6 +47,8 @@ if(isset($_POST['submit'])){
           }
 
           $_SESSION['name'] = $data['users']['name'];
+          setcookie('email',$email,time()+(86400*30));
+          setcookie('password',$pass,time()+(86400*30));
           $error = 'dang nhap thanh cong';
           $dsusers='<button><a href="qluser.php"><i class="fa fa-lock"></i> dluser</a></button>';
       }else{
@@ -85,7 +96,7 @@ if(isset($_POST['submit'])){
             <div class="col-sm-6">
             <div class="form-group">
               <label for=""><b>Email</b></label>
-              <input type="email" class="form-control" name="email" id=""  placeholder="email">
+              <input type="email" class="form-control" name="email" id="" value="<?php echo $email_cookie; ?>" placeholder="email">
               
             </div>
           </div>
@@ -98,7 +109,7 @@ if(isset($_POST['submit'])){
             <div class="col-sm-6 ">
                 <div class="form-group">
                 <label for=""><b>Password</b></label>
-                <input type="password" class="form-control "  name="password"  placeholder="Password">
+                <input type="password" class="form-control "  name="password" value="<?php echo $password_cookie; ?>" placeholder="Password">
                 </div>
             </div>
           
