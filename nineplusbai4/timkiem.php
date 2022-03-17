@@ -10,7 +10,7 @@ if(isset($_SESSION['name'])){
 
 
 if(isset($_POST['submit'])){
-    $user = htmlspecialchars($_POST['timkiem']);
+    $user = htmlspecialchars(mysqli_real_escape_string($con,$_POST['timkiem']));
 
     
 
@@ -112,7 +112,7 @@ if(isset($_POST['submit'])){
     </table>
   </div>
 
-    
+  <button><a href="qluser.php">ve home</a></button>
      
 
 

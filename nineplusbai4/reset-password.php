@@ -29,30 +29,46 @@ if(isset($_POST['submit'])){
 
         $email   = htmlspecialchars($_POST['email']);
         $pass   = htmlspecialchars($_POST['password']);
-        $password   = md5($pass);
-        $ngayhan = date("Y/m/d");
-        $sql = "SELECT * FROM doimk WHERE email='".$email."' ORDER BY id DESC LIMIT 1";
-        $result = $con->query($sql);
-        $data=[];
 
-        if($result->num_rows >0){
-            while($row = $result->fetch_assoc()){
-                $data['users']=$row;
-            }
+
+
+        $number = preg_match('@[0-9]@', $pass);
+        $uppercase = preg_match('@[A-Z]@', $pass);
+        $lowercase = preg_match('@[a-z]@', $pass);
+        $specialChars = preg_match('@[^\w]@', $pass);
+        
+        if(strlen($pass) < 8 || !$number || !$uppercase || !$lowercase || !$specialChars) {
+          $error = "password khong đúng định dạng";
+        }else{
+          $password   = md5($pass);
+          $ngayhan = date("Y/m/d");
+          $sql = "SELECT * FROM doimk WHERE email='".$email."' ORDER BY id DESC LIMIT 1";
+          $result = $con->query($sql);
+          $data=[];
+
+          if($result->num_rows >0){
+              while($row = $result->fetch_assoc()){
+                  $data['users']=$row;
+              }
+          }
+          foreach($data as $vl){
+
+              if($email == $vl['email'] && $ngayhan >= $vl['ngayhethan']){
+
+                  $sql = "UPDATE users SET password = '".$password."' WHERE email='".$email."'";
+                  $result = $con->query($sql);
+                  $error = 'doi password thanh cong';
+                  
+              }else{
+                  $error = 'doi password that bai';
+              }
+              
+          }
         }
-        foreach($data as $vl){
 
-            if($email == $vl['email'] && $ngayhan >= $vl['ngayhethan']){
 
-                $sql = "UPDATE users SET password = '".$password."' WHERE email='".$email."'";
-                $result = $con->query($sql);
-                $error = 'doi password thanh cong';
-                
-            }else{
-                $error = 'doi password that bai';
-            }
-            
-        }
+
+        
         
 
     }
@@ -90,14 +106,14 @@ if(isset($_POST['submit'])){
       <form action="" method="POST" class="khung" id="formdmk">
         <div class="row">
           <div class="col-sm-4"></div>
-          <div class="col-sm-4"><b>doi mat khau</b></div>
+          <div class="col-sm-4"><b>đổi mật khẩu</b></div>
           <div class="col-sm-4"></div>
         </div>
         <div class="row ">
             <div class="col-sm-2"></div>
             <div class="col-sm-6">
             <div class="form-group">
-              <label for=""><b>Email</b></label>
+              <label for=""><b>email</b></label>
               <input type="email" class="form-control" name="email" id=""  placeholder="email">
               
             </div>
@@ -120,7 +136,7 @@ if(isset($_POST['submit'])){
             <div class="col-sm-2"></div>
             <div class="col-sm-6 ">
                 <div class="form-group">
-                <label for=""><b>Password</b></label>
+                <label for=""><b>password</b></label>
                 <input type="password" class="form-control "  name="password"  placeholder="Password">
                 </div>
             </div>
@@ -129,10 +145,10 @@ if(isset($_POST['submit'])){
         
         <div class="row ">
           <div class="col-sm-4"></div>
-          <button type="submit" name="submit" class="btn btn-primary ">doi mat khau</button>
+          <button type="submit" name="submit" class="btn btn-primary ">đổi mật khẩu</button>
           <div class="col-sm-4"></div>
         </div>
-        <button ><a href="dangnhap.php">Dang Nhap</a></button>
+        <button ><a href="dangnhap.php">đăng nhập</a></button>
         
           
         <?php echo $error;?>
@@ -154,17 +170,17 @@ if(isset($_POST['submit'])){
     <script type="text/javascript" src="js/jquery.validate.min.js"></script>
     <script>
 
-        
+      $(document).ready(function () {  
         $("#formdmk").validate({
             rules: {
               email: {
                 required:true,
-                email:true
+                email:true,
 
               },
               password:{
                 required:true,
-                minlenght:8
+                minlenght:6
                 
               }
              
@@ -172,16 +188,17 @@ if(isset($_POST['submit'])){
             messages: {
               email: {
                 required:"moi nhap email",
-                email:"email khong dung"
+                email:"email khong dung",
               },
               password:{
                 required:"moi nhap password",
-                minlenght:"password ít nhất 8 ký tự"
-                
+                minlenght:"password ít nhất 6 ký tự",
+               
               }
              
             }
           });
+        });
 
     </script>
   </body>

@@ -35,15 +35,20 @@ if(isset($_POST['submit'])){
 
 
 
-    $bt = "/^([A-Z]){1}([\w_\.!@#$%^&*()]+){5,31}$/";
-
-    
 
 
-    if(!preg_match($bt ,$password)){
-      $error = "";
+
+
+      $number = preg_match('@[0-9]@', $password);
+      $uppercase = preg_match('@[A-Z]@', $password);
+      $lowercase = preg_match('@[a-z]@', $password);
+      $specialChars = preg_match('@[^\w]@', $password);
+     
+      if(strlen($password) < 8 || !$number || !$uppercase || !$lowercase || !$specialChars) {
+      
+        $error = "password khong đúng định dạng";
       }else if($password != $passwordcf){
-        $error = "";
+        $error = "password và password confirm không trùng khớp";
       }else{
         $sql1 = "SELECT * FROM users where email='".$email."'";
         $result = $con->query($sql1);
@@ -66,10 +71,10 @@ if(isset($_POST['submit'])){
             $PHPMailer->setFrom('lenghiamailtest@gmail.com', 'lenghia');
             $PHPMailer->addAddress($email ,'user');              
             $PHPMailer->isHTML(true);
-            $PHPMailer->Subject = 'thong bao dang nhap';
-            $PHPMailer->Body = 'dang nhap thanh cong';
+            $PHPMailer->Subject = 'thông báo đăng ký';
+            $PHPMailer->Body = 'bạn đã đăng ký thành công';
             $PHPMailer->send();      
-            $error = "dang ky thanh cong moi ban dang nhap";
+            $error = "đăng ký thành công mời bạn đăng nhập";
           }catch (Exception $exception) {
             echo $PHPMailer->ErrorInfo;
           }
@@ -113,23 +118,23 @@ if(isset($_POST['submit'])){
 
 
     <div class="br">
-      <form action="" method="POST" class="khung">
+      <form action="" method="POST" class="khung" id="formdk">
         <div class="row">
           <div class="col-sm-4"></div>
-          <div class="col-sm-4"><b>ĐĂNG KÝ</b></div>
+          <div class="col-sm-4"><b>đăng ký</b></div>
           <div class="col-sm-4"></div>
         </div>
         <div class="row ">
           <div class="col-sm-6">
             <div class="form-group">
-              <label for=""><b>Username</b></label>
+              <label for=""><b>username</b></label>
               <input type="text" class="form-control" name="username" id="" placeholder="username">
               
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group">
-              <label for=""><b>Email</b></label>
+              <label for=""><b>email</b></label>
               <input type="email" class="form-control" name="email" id=""  placeholder="email">
               
             </div>
@@ -139,13 +144,13 @@ if(isset($_POST['submit'])){
         <div class="row ">
           <div class="col-sm-6 ">
             <div class="form-group">
-              <label for=""><b>Password</b></label>
+              <label for=""><b>password</b></label>
               <input type="password" class="form-control "  name="password" id="password" placeholder="Password">
             </div>
           </div>
           <div class="col-sm-6 ">
             <div class="form-group">
-              <label for=""><b>Password Confirm</b></label>
+              <label for=""><b>password confirm</b></label>
               <input type="password" class="form-control " name="passwordcf" id="passwordcf" placeholder="Password Confirm">
             </div>
           </div>
@@ -153,14 +158,14 @@ if(isset($_POST['submit'])){
         
         <div class="row ">
           <div class="col-sm-4"></div>
-          <button type="submit" name="submit" class="btn btn-primary ">Đăng Ký</button>
+          <button type="submit" name="submit" class="btn btn-primary ">đăng ký</button>
           <div class="col-sm-4"></div>
         </div>
         <p id="err"><?php echo $error;?></p>
         
         
         <br>
-        <button ><a href="dangnhap.php">Dang Nhap</a></button>
+        <button ><a href="dangnhap.php">đăng nhập</a></button>
         
       </form>
     </div>
@@ -197,8 +202,5 @@ if(isset($_POST['submit'])){
     $('p#err').text(err);
   });
 
-
-
-  
     
 </script>

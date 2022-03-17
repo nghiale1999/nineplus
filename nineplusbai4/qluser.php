@@ -109,6 +109,9 @@ foreach($data as $vl){
     </table>
   </div>
 
+
+  
+
     
      
 
@@ -118,6 +121,9 @@ foreach($data as $vl){
         echo '<a style="margin:0 5px;" href="qluser.php?trang='.$i.'">'.$i.'</a>';
     }
  ?>
+
+<br>
+ <button><a href="dangnhap.php">đăng xuất</a></button>
 
 
     <!-- Optional JavaScript -->
@@ -139,8 +145,9 @@ foreach($data as $vl){
         $('a.deleteuser').click(function(){
             var id = $(this).attr('id');
             
-            confirm('bạn có chắc muốn xóa user?');
-            $.ajax({
+            var xacnhan = confirm('bạn có chắc muốn xóa user?');
+            if(xacnhan){
+                $.ajax({
                 method: "POST",
                 url: 'delete.php',
                 data:{
@@ -151,9 +158,11 @@ foreach($data as $vl){
 
                 }    
 
-            });
+                });
             
-            $(this).closest('td.td_delete').closest('tr').remove();
+                $(this).closest('td.td_delete').closest('tr').remove();
+            }
+            
 
         });
 

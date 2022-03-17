@@ -32,8 +32,10 @@ if(isset($_POST['submit'])){
 
         $sql = "SELECT * FROM users where email='".$email."'";
         $result = $con->query($sql);
-
-        if($result->num_rows >0){
+        if($result->num_rows == 0){
+          $error = "email chưa được đăng ký";
+        }
+         if($result->num_rows >0){
             
             while($row = $result->fetch_assoc()){
               $data['users']=$row;
@@ -71,19 +73,13 @@ if(isset($_POST['submit'])){
             $PHPMailer->addAddress($email ,'user');              
             $PHPMailer->isHTML(true);
             $PHPMailer->Subject = 'dang ky mat khau moi';
-            $PHPMailer->Body = 'doi mat khau vui long click vao link: https://nineplusbai4.herokuapp.com/reset-password.php?token='.$random.'';
+            // $PHPMailer->Body = 'doi mat khau vui long click vao link: https://nineplusbai4.herokuapp.com/reset-password.php?token='.$random.'';
+            $PHPMailer->Body = 'doi mat khau vui long click vao link: http://localhost:8080/hoc_php/nineplusbai4/reset-password.php?token='.$random.'';
             $PHPMailer->send();      
-            $error = 'lay mat khai thanh cong';
+            $error = 'lấy mật khẩu thành công vui lòng kiểm tra mail của bạn';
           }catch (Exception $exception) {
             echo $PHPMailer->ErrorInfo;
           }
-
-
-
-
-
-
-
             
             
         }
@@ -147,7 +143,7 @@ if(isset($_POST['submit'])){
             <button type="submit" name="submit" class="btn btn-primary ">Lấy Lại</button>
             <div class="col-sm-4"></div>
         </div>
-        
+        <?php echo $error; ?>
         
             
        

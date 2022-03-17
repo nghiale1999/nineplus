@@ -1,36 +1,36 @@
 <?php 
 
 include('connect.php');
-
-
 $data=[];
 $error = '';
 if(isset($_GET['id_user'])){
 
-    $id_user = $_GET['id_user'];
-    $sql = "SELECT * FROM users where id='".$id_user."'";
-
-    $result = $con -> query($sql);
+    
+  
+  
+    $id_user = isset($_GET['id_user'])?(string)(int)$_GET['id_user']:false;
+    $sql= 'SELECT * FROM users WHERE id= ' .$id_user;
     
 
+    
+    $result = $con -> query($sql);
+      
     if($result->num_rows >0){
-        while($row = $result->fetch_assoc()){
-            $data[]=$row;
-        }
+      while($row = $result->fetch_assoc()){
+        $data[]=$row;
+      }
+    }else{
+      $error = 'không tìm thấy user ';
     }
-
-
-
+  
 }
 
 
-if(isset($_POST['submit'])){
-    $name = htmlspecialchars($_POST['name']);
-    $pass   = htmlspecialchars($_POST['password']);
-    $password   = md5($pass);
-    $email = htmlspecialchars($_POST['email']);
 
-    $sql =" UPDATE users SET name = '".$name."', email = '".$email."', password = '".$password."' WHERE id='".$id_user."' ";
+if(isset($_POST['submit'])){
+  
+    $name = htmlspecialchars(mysqli_real_escape_string($con,$_POST['name']));    
+    $sql =" UPDATE users SET name = '".$name."' WHERE id='".$id_user."' ";
 
     if($result = $con -> query($sql)){
         $error = 'update user id='.$id_user.' thanh cong';
@@ -57,11 +57,9 @@ if(isset($_POST['submit'])){
   </head>
   <body>
     <form action="" method="post">
-
-        id: <input type="text" value="<?php echo $data[0]['id']?>" readonly>
         name: <input type="text" name="name" value="<?php echo $data[0]['name']?>" >
-        email: <input type="text" name="email" value="<?php echo $data[0]['email']?>" >
-        password: <input type="password" name="password" value="<?php echo $data[0]['password']?>" >
+        email: <input type="text" name="email" value="<?php echo $data[0]['email']?>" readonly>
+        
         <button type="submit" name="submit">update</button>
         
     </form>

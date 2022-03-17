@@ -6,7 +6,6 @@ session_start();
 $check=1;
 
 $error='';
-$dsusers='';
 $password_cookie='';
 $email_cookie='';
 
@@ -19,42 +18,72 @@ if(isset($_COOKIE['email'])&&isset($_COOKIE['password'])){
 if(isset($_POST['submit'])){
     
     if($_POST['email']==''){
-        $error='moi nhap email';
+        
         $check=2;
     }
 
     if($_POST['password']==''){
-        $error='moi nhap password';
+        
         $check=2;
     }
 
-
-    if($check==1){
-      $email   = htmlspecialchars($_POST['email']);
-      $pass   = htmlspecialchars($_POST['password']);
-      $password   = md5($pass);
-
-
-      $sql = "SELECT * FROM users where email='".$email."' AND password='".$password."'";
-
-
-      $result = $con->query($sql);
-      $data=[];
-
-      if($result->num_rows >0){
-          while($row = $result->fetch_assoc()){
-              $data['users']=$row;
-          }
-
-          $_SESSION['name'] = $data['users']['name'];
-          setcookie('email',$email,time()+(86400*30));
-          setcookie('password',$pass,time()+(86400*30));
-          $error = 'dang nhap thanh cong';
-          $dsusers='<button><a href="qluser.php"><i class="fa fa-lock"></i> dluser</a></button>';
-      }else{
-          $error = 'dang nhap that bai';
+    if(isset($_POST['click'])){
+      if($check==1){
+        $email   = htmlspecialchars($_POST['email']);
+        $pass   = htmlspecialchars($_POST['password']);
+        $password   = md5($pass);
+  
+  
+        $sql = "SELECT * FROM users where email='".$email."' AND password='".$password."'";
+  
+  
+        $result = $con->query($sql);
+        $data=[];
+  
+        if($result->num_rows >0){
+            while($row = $result->fetch_assoc()){
+                $data['users']=$row;
+            }
+  
+            $_SESSION['name'] = $data['users']['name'];
+            setcookie('email',$email,time()+(86400*30));
+            setcookie('password',$pass,time()+(86400*30));
+            header("location:qluser.php");
+        }else{
+            $error = 'dang nhap that bai';
+        }
+      } 
+    }else{
+      if($check==1){
+        setcookie('email',time()-100);
+        setcookie('password',time()-100);
+        $email   = htmlspecialchars($_POST['email']);
+        $pass   = htmlspecialchars($_POST['password']);
+        $password   = md5($pass);
+  
+  
+        $sql = "SELECT * FROM users where email='".$email."' AND password='".$password."'";
+  
+  
+        $result = $con->query($sql);
+        $data=[];
+  
+        if($result->num_rows >0){
+            while($row = $result->fetch_assoc()){
+                $data['users']=$row;
+            }
+  
+            $_SESSION['name'] = $data['users']['name'];
+            
+            header("location:qluser.php");
+        }else{
+            $error = 'dang nhap that bai';
+        }
       }
     }
+
+
+    
 }
 
 
@@ -88,14 +117,14 @@ if(isset($_POST['submit'])){
       <form action="" method="POST" class="khung" id="formdn">
         <div class="row">
           <div class="col-sm-4"></div>
-          <div class="col-sm-4"><b>ĐĂNG Nhap</b></div>
+          <div class="col-sm-4"><b>đăng nhập</b></div>
           <div class="col-sm-4"></div>
         </div>
         <div class="row ">
             <div class="col-sm-2"></div>
             <div class="col-sm-6">
             <div class="form-group">
-              <label for=""><b>Email</b></label>
+              <label for=""><b>email</b></label>
               <input type="email" class="form-control" name="email" id="" value="<?php echo $email_cookie; ?>" placeholder="email">
               
             </div>
@@ -108,9 +137,19 @@ if(isset($_POST['submit'])){
             <div class="col-sm-2"></div>
             <div class="col-sm-6 ">
                 <div class="form-group">
-                <label for=""><b>Password</b></label>
+                <label for=""><b>password</b></label>
                 <input type="password" class="form-control "  name="password" value="<?php echo $password_cookie; ?>" placeholder="Password">
                 </div>
+            </div>
+          
+        </div>
+        <div class="row ">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-6 ">
+                <span>
+                  <input type="checkbox" class="checkbox" name="click"> 
+                    remember password
+                </span>
             </div>
           
         </div>
@@ -122,10 +161,9 @@ if(isset($_POST['submit'])){
         </div>
         
         <button><a href="quenmk.php">Quên Mật khẩu?</a></button>
-          
+        <br> 
         <?php echo $error;?>
-        <br>
-        <?php echo $dsusers;?>
+        
         
       </form>
       
@@ -155,6 +193,10 @@ if(isset($_POST['submit'])){
                 required:true,
                 minlenght:8
                 
+              },
+              click:{
+                required:true,
+
               }
              
             },
@@ -167,6 +209,9 @@ if(isset($_POST['submit'])){
                 required:"moi nhap password",
                 minlenght:"password ít nhất 8 ký tự"
                 
+              },
+              click:{
+                required:'mời click remember password'
               }
              
             }
