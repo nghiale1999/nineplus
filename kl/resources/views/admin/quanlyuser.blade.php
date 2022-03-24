@@ -40,8 +40,8 @@
                         <td>{{$value->sdt}}</td>
                         <td>{{$value->diachi}}</td>
                         
-                        <td  class="delete"><a  class="btn btn-primary delete" id="{{$value->id}}">Delete</a></td>
-                        <td><a  class="btn btn-danger" href="{{url('admin/qluser/warning/'.$value->id)}}">Warning</a></td>
+                        <td  class="delete"><a  class=" delete" id="{{$value->id}}">Xóa</a></td>
+                        <td><a  class="btn btn-danger" href="{{url('admin/quanlyuser/hotro/'.$value->id)}}">Hỗ Trợ</a></td>
                     </tr>
                     @endforeach 
                 </tbody>
@@ -68,10 +68,10 @@
             $.ajax({
     
                 method: "POST",
-                url: 'deleteuser',
+                url: '/admin/delete_user',
                 data:{
                     _token: '{{csrf_token()}}',               
-                    id_user: id,                               
+                    user_id: id,                               
                 },
                 success:function(data){
                     alert(data);

@@ -36,9 +36,12 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{url('login')}}" aria-expanded="false">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link"  aria-expanded="false">
                         <i class="mdi mdi-face"></i>
-                        <span class="hide-menu">Logout</span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <input type="submit" " value="logout">
+                        </form>
                     </a>
                 </li>
                 <li class="sidebar-item">
